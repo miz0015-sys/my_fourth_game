@@ -19,6 +19,13 @@ let obstacles = [
   { x: 150, y: 100, width: 100, height: 20 }
 ];
 
+  // Block obstacle
+  if (!isColliding(newX, newY)) {
+    player.x = newX;
+    player.y = newY;
+  }
+}
+
 // Enemy
 let enemy = {
   x: 300,
