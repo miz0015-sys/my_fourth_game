@@ -55,12 +55,17 @@ function movement() {
 // Obstacle collision
 function isCollidingWithObstacle(px, py) {
   for (let o of obstacles) {
-    if (
-      px > o.x &&
-      px < o.x + o.width &&
-      py > o.y &&
-      py < o.y + o.height
-    ) {
+
+    // Find closest point on rectangle to the circle
+    let closestX = Math.max(o.x, Math.min(px, o.x + o.width));
+    let closestY = Math.max(o.y, Math.min(py, o.y + o.height));
+
+    // Distance from circle center to that point
+    let dx = px - closestX;
+    let dy = py - closestY;
+
+    // Check if inside radius
+    if (dx * dx + dy * dy) <= (player.radius * player.radius)
       return true;
     }
   }
