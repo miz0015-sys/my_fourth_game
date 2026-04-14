@@ -119,7 +119,7 @@ ctx.strokeRect(2, 2, canvas.width - 4, canvas.height - 4);
 
 // Game loop
 function gameLoop() {
-  movePlayer();
+  movement();
   moveEnemy();
   checkEnemyCollision();
   draw();
