@@ -65,13 +65,12 @@ function isCollidingWithObstacle(px, py) {
     let dy = py - closestY;
 
     // Check if inside radius
-    if (dx * dx + dy * dy) <= (player.radius * player.radius)
+    if ((dx * dx + dy * dy) <= (player.radius * player.radius)) {
       return true;
     }
   }
   return false;
 }
-
 // Enemy movement
 function moveEnemy() {
   enemy.y += enemy.speed * enemy.direction;
