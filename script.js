@@ -65,7 +65,7 @@ function isCollidingWithObstacle(px, py) {
     let dy = py - closestY;
 
     // Check if inside radius
-(dx * dx + dy * dy) <= ((player.radius - 1) * (player.radius - 1))
+if(dx * dx + dy * dy) <= ((player.radius - 1) * (player.radius - 1))
       return true;
     }
   }
