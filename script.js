@@ -153,7 +153,13 @@ function draw() {
   ctx.fillStyle = "black";
   ctx.font = "20px Arial";
   ctx.textAlign = "left";
-  ctx.fillText("Time: " + elapsedTime + "s", 10, 25);
+let minutes = Math.floor(elapsedTime / 60);
+let seconds = elapsedTime % 60;
+
+// adds leading zero (e.g. 1:05 instead of 1:5)
+seconds = seconds < 10 ? "0" + seconds : seconds;
+
+ctx.fillText(`Time: ${minutes}:${seconds}`, 10, 25);
 
   // Red boundary
   ctx.strokeStyle = "red";
