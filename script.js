@@ -39,13 +39,16 @@ function movement() {
   if (keys["ArrowLeft"]) newX -= player.speed;
   if (keys["ArrowRight"]) newX += player.speed;
 
-  // Boundary block
-  if (newX - player.radius < 0 || newX + player.radius > canvas.width) {
-    newX = player.x;
-  }
-  if (newY - player.radius < 0 || newY + player.radius > canvas.height) {
-    newY = player.y;
-  }
+// Boundary block with margin
+const margin = 5;
+
+if (newX - player.radius < margin || newX + player.radius > canvas.width - margin) {
+  newX = player.x;
+}
+
+if (newY - player.radius < margin || newY + player.radius > canvas.height - margin) {
+  newY = player.y;
+}
 
   // Obstacle check
 // Move X first
@@ -72,7 +75,7 @@ function isCollidingWithObstacle(px, py) {
     let dy = py - closestY;
 
     // Check if inside radius
-if((dx * dx + dy * dy) <= ((player.radius - 1) * (player.radius - 1))){
+if((dx * dx + dy * dy) < ((player.radius) * (player.radius )){
       return true;
     }
   }
