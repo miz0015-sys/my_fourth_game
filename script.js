@@ -107,12 +107,11 @@ function checkEnemyCollision() {
   let distance = Math.sqrt(dx * dx + dy * dy);
 
   if (distance < player.radius + enemy.radius) {
+    // Reset player position ONLY (no timer reset)
     player.x = 50;
     player.y = 50;
-    startTime = Date.now(); // reset timer on hit
   }
 }
-
 // Win check
 function checkWin() {
   let dx = player.x - goal.x;
