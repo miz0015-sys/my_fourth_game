@@ -24,7 +24,8 @@ document.addEventListener("keyup", (e) => keys[e.key] = false);
 // Obstacles
 let obstacles = [
   { x: 150, y: 100, width: 100, height: 20 },
-  { x: 120, y: 40, width: 150, height: 40 }
+  { x: 120, y: 40, width: 150, height: 30 },
+  { x: 400, y: 0, width: 40, height: 200 }
 ];
 
 // Enemy
