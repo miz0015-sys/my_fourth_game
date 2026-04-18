@@ -207,7 +207,10 @@ function draw() {
 
 // Game loop
 function gameLoop() {
-  if (gameState === "playing") {
+if (gameState === "won" && elapsedTime !== null) {
+  // lock it once
+  elapsedTime = elapsedTime;
+}
     movement();
     moveEnemy();
     checkEnemyCollision();
