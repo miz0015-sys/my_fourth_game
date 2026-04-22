@@ -26,7 +26,8 @@ let obstacles = [
   { x: 150, y: 100, width: 100, height: 20 },
   { x: 120, y: 40, width: 150, height: 30 },
   { x: 400, y: 0, width: 40, height: 200 },
-  { x: 50, y: 80, width: 30, height: 300 }
+  { x: 50, y: 80, width: 30, height: 280 },
+  { x: 300, y: 260, width: 100, height: 20 }
 ];
 
 // Enemy
