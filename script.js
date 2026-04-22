@@ -1,7 +1,6 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-// Player
 let player = {
   x: 50,
   y: 50,
@@ -9,19 +8,15 @@ let player = {
   speed: 3
 };
 
-// Game state
 let gameState = "playing";
 
-// Timer
 let startTime = Date.now();
 let elapsedTime = 0;
 
-// Controls
 let keys = {};
 document.addEventListener("keydown", (e) => keys[e.key] = true);
 document.addEventListener("keyup", (e) => keys[e.key] = false);
 
-// Obstacles
 let obstacles = [
   { x: 150, y: 100, width: 100, height: 20 },
   { x: 120, y: 40, width: 150, height: 30 },
@@ -30,31 +25,22 @@ let obstacles = [
   { x: 350, y: 260, width: 150, height: 20 }
 ];
 
-let enemy1 = {
-  x: 300,
-  y: 50,
-  radius: 10,
-  speed: 2,
-  direction: 1
-};
+let enemies = [
+  { x: 300, y: 50, radius: 10, speed: 2, direction: 1, axis: "y", color: "red" },
+  { x: 500, y: 250, radius: 10, speed: 4, direction: -1, axis: "x", color: "purple" }
+];
 
-let enemy2 = {
-  x: 500,
-  y: 250,
-  radius: 10,
-  speed: 4,
-  direction: -1
-};
-
-
-// Goal
 let goal = {
   x: 450,
   y: 350,
   radius: 12
 };
 
-// Movement
+function resetPlayer() {
+  player.x = 50;
+  player.y = 50;
+}
+
 function movement() {
   let newX = player.x;
   let newY = player.y;
@@ -74,16 +60,10 @@ function movement() {
     newY = player.y;
   }
 
-  if (!isCollidingWithObstacle(newX, player.y)) {
-    player.x = newX;
-  }
-
-  if (!isCollidingWithObstacle(player.x, newY)) {
-    player.y = newY;
-  }
+  if (!isCollidingWithObstacle(newX, player.y)) player.x = newX;
+  if (!isCollidingWithObstacle(player.x, newY)) player.y = newY;
 }
 
-// Obstacle collision
 function isCollidingWithObstacle(px, py) {
   for (let o of obstacles) {
     let closestX = Math.max(o.x, Math.min(px, o.x + o.width));
@@ -92,35 +72,45 @@ function isCollidingWithObstacle(px, py) {
     let dx = px - closestX;
     let dy = py - closestY;
 
-    if ((dx * dx + dy * dy) < (player.radius * player.radius)) {
-      return true;
-    }
+    if ((dx * dx + dy * dy) < (player.radius * player.radius)) return true;
   }
   return false;
 }
 
-// Enemy movement
-function moveEnemy() {
-  enemy.y += enemy.speed * enemy.direction;
+function moveEnemies() {
+  for (let enemy of enemies) {
+    if (enemy.axis === "y") {
+      enemy.y += enemy.speed * enemy.direction;
 
-  if (enemy.y > canvas.height - enemy.radius || enemy.y < enemy.radius) {
-    enemy.direction *= -1;
+      if (enemy.y > canvas.height - enemy.radius || enemy.y < enemy.radius) {
+        enemy.direction *= -1;
+      }
+    }
+
+    if (enemy.axis === "x") {
+      enemy.x += enemy.speed * enemy.direction;
+
+      if (enemy.x > canvas.width - enemy.radius || enemy.x < enemy.radius) {
+        enemy.direction *= -1;
+      }
+    }
   }
 }
 
-// Enemy collision
 function checkEnemyCollision() {
-  let dx = player.x - enemy.x;
-  let dy = player.y - enemy.y;
-  let distance = Math.sqrt(dx * dx + dy * dy);
+  for (let enemy of enemies) {
+    let dx = player.x - enemy.x;
+    let dy = player.y - enemy.y;
+    let dist = Math.sqrt(dx * dx + dy * dy);
 
-  if (distance < player.radius + enemy.radius) {
-    player.x = 50;
-    player.y = 50;
+    if (dist < player.radius + enemy.radius) {
+      resetPlayer();
+      startTime = Date.now();
+      break;
+    }
   }
 }
 
-// Win check
 function checkWin() {
   let dx = player.x - goal.x;
   let dy = player.y - goal.y;
@@ -131,7 +121,26 @@ function checkWin() {
   }
 }
 
-// Click (Play Again)
+function resetGame() {
+  resetPlayer();
+  startTime = Date.now();
+  elapsedTime = 0;
+  gameState = "playing";
+
+  enemies.forEach((enemy, i) => {
+    if (i === 0) {
+      enemy.x = 300;
+      enemy.y = 50;
+      enemy.direction = 1;
+    }
+    if (i === 1) {
+      enemy.x = 500;
+      enemy.y = 250;
+      enemy.direction = -1;
+    }
+  });
+}
+
 canvas.addEventListener("click", function (e) {
   if (gameState === "won") {
     let rect = canvas.getBoundingClientRect();
@@ -144,20 +153,14 @@ canvas.addEventListener("click", function (e) {
       mouseY > canvas.height / 2 + 10 &&
       mouseY < canvas.height / 2 + 50
     ) {
-      player.x = 50;
-      player.y = 50;
-      startTime = Date.now();
-      elapsedTime = 0;
-      gameState = "playing";
+      resetGame();
     }
   }
 });
 
-// Draw
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Timer
   ctx.fillStyle = "black";
   ctx.font = "20px Arial";
   ctx.textAlign = "left";
@@ -168,38 +171,34 @@ function draw() {
 
   ctx.fillText(`Time: ${minutes}:${seconds}`, 10, 25);
 
-  // Boundary
   ctx.strokeStyle = "red";
   ctx.lineWidth = 5;
   ctx.strokeRect(2, 2, canvas.width - 4, canvas.height - 4);
 
-  // Player
   ctx.beginPath();
   ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
   ctx.fillStyle = "blue";
   ctx.fill();
 
-  // Obstacles
   ctx.fillStyle = "black";
   for (let o of obstacles) {
     ctx.fillRect(o.x, o.y, o.width, o.height);
   }
 
-  // Enemy
-  ctx.beginPath();
-  ctx.arc(enemy.x, enemy.y, enemy.radius, 0, Math.PI * 2);
-  ctx.fillStyle = "red";
-  ctx.fill();
+  for (let enemy of enemies) {
+    ctx.beginPath();
+    ctx.arc(enemy.x, enemy.y, enemy.radius, 0, Math.PI * 2);
+    ctx.fillStyle = enemy.color;
+    ctx.fill();
+  }
 
-  // Goal
   ctx.beginPath();
   ctx.arc(goal.x, goal.y, goal.radius, 0, Math.PI * 2);
   ctx.fillStyle = "green";
   ctx.fill();
 
-  // Win screen
   if (gameState === "won") {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+    ctx.fillStyle = "rgba(0,0,0,0.6)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.fillStyle = "white";
@@ -222,14 +221,12 @@ function draw() {
   }
 }
 
-// Game loop
 function gameLoop() {
   if (gameState === "playing") {
     movement();
-    moveEnemy();
+    moveEnemies();
     checkEnemyCollision();
     checkWin();
-
     elapsedTime = Math.floor((Date.now() - startTime) / 1000);
   }
 
