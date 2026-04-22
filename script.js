@@ -30,7 +30,7 @@ let obstacles = [
 
 let enemies = [
   { x: 300, y: 50, radius: 10, speed: 2, direction: 1, axis: "y", color: "red", startX: 300, startY: 50 },
-  { x: 500, y: 250, radius: 10, speed: 4, direction: -1, axis: "x", color: "purple", startX: 500, startY: 250 }
+  { x: 480, y: 250, radius: 10, speed: 4, direction: -1, axis: "x", color: "purple", startX: 480, startY: 250 }
 ];
 
 let goal = {
